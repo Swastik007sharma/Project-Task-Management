@@ -6,12 +6,11 @@ const SALT_ROUNDS = 10;
 
 const getJwtSecret = () => {
   const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error("JWT_SECRET is not set");
-  }
+  if (!secret) throw new Error("JWT_SECRET is not set");
   return secret;
 };
 
+// Helper: Remove sensitive data before sending to client
 const toSafeUser = (user) => {
   if (!user) return null;
   const safeUser = user.toObject ? user.toObject() : { ...user };
@@ -19,106 +18,142 @@ const toSafeUser = (user) => {
   return safeUser;
 };
 
-// Register a new user
+// Helper: Set Cookie (Keeps code DRY)
+const setAuthCookie = (res, token) => {
+  res.cookie("token", token, {
+    httpOnly: true, // Prevents XSS
+    secure: process.env.NODE_ENV === "production", // Only over HTTPS in production
+    sameSite: "strict", // Prevents CSRF
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+};
+
+/**
+ * @desc    Register a new user
+ * @route   POST /api/auth/register
+ */
 exports.registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res
+        .status(400)
+        .json({ success: false, message: "User already exists" });
     }
 
+    // Hash password & create user
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-    const newUser = new User({ name, email, password: hashedPassword });
-    await newUser.save();
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
     const token = jwt.sign(
       { id: newUser._id, role: newUser.role },
       getJwtSecret(),
       { expiresIn: "7d" },
     );
+
+    setAuthCookie(res, token);
+
     res.status(201).json({
+      success: true,
       message: "User registered successfully",
       token,
-      user: toSafeUser(newUser),
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Login user
+/**
+ * @desc    Login user
+ * @route   POST /api/auth/login
+ */
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid email or password" });
     }
-    const passwordMatches = await bcrypt.compare(password, user.password);
-    if (!passwordMatches) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+
     const token = jwt.sign({ id: user._id, role: user.role }, getJwtSecret(), {
       expiresIn: "7d",
     });
-    res
-      .status(200)
-      .cookie("token", token, {
-        httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      }) // 7 days
-      .json({ message: "Login successful", token, user: toSafeUser(user) });
+
+    setAuthCookie(res, token);
+
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: toSafeUser(user),
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Get current user profile
+/**
+ * @desc    Get current user profile
+ * @route   GET /api/auth/profile
+ */
 exports.getProfile = async (req, res) => {
   try {
-    if (!req.user?.id) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+    // req.user is populated by your protect middleware
     const user = await User.findById(req.user.id);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
-    res.status(200).json({ user: toSafeUser(user) });
+    res.status(200).json({ success: true, user: toSafeUser(user) });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Update current user profile
+/**
+ * @desc    Update current user profile
+ * @route   PUT /api/auth/profile
+ */
 exports.updateProfile = async (req, res) => {
   try {
-    if (!req.user?.id) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+    const { name, password } = req.body;
+    const user = await User.findById(req.user.id);
 
-    const { name, email, password } = req.body;
-    const update = {};
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (name) update.name = name;
-    if (email) update.email = email;
-    if (password) {
-      update.password = await bcrypt.hash(password, SALT_ROUNDS);
-    }
+    if (name) user.name = name;
+    if (password) user.password = await bcrypt.hash(password, SALT_ROUNDS);
 
-    const updatedUser = await User.findByIdAndUpdate(req.user.id, update, {
-      new: true,
-      runValidators: true,
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated",
+      user: toSafeUser(user),
     });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res
-      .status(200)
-      .json({ message: "Profile updated", user: toSafeUser(updatedUser) });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
+};
+
+/**
+ * @desc    Logout User
+ * @route   POST /api/auth/logout
+ */
+exports.logoutUser = (req, res) => {
+  res.cookie("token", "", {
+    httpOnly: true,
+    expires: new Date(0), // Instantly expires the cookie
+  });
+  res.status(200).json({ success: true, message: "Logged out successfully" });
 };
