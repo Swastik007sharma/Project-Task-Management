@@ -73,3 +73,52 @@ exports.loginUser = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+// Get current user profile
+exports.getProfile = async (req, res) => {
+  try {
+    if (!req.user?.id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ user: toSafeUser(user) });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Update current user profile
+exports.updateProfile = async (req, res) => {
+  try {
+    if (!req.user?.id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { name, email, password } = req.body;
+    const update = {};
+
+    if (name) update.name = name;
+    if (email) update.email = email;
+    if (password) {
+      update.password = await bcrypt.hash(password, SALT_ROUNDS);
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, update, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Profile updated", user: toSafeUser(updatedUser) });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
