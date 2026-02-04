@@ -11,8 +11,10 @@ app.use(express.json());
 // Routes
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Server is running");
 });
+
+app.use("/api/auth", require("./routes/auth.route"));
 
 // Connect to MongoDB and start the server
 
