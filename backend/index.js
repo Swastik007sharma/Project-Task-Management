@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const connectDB = require("./config/db");
 dotenv.config();
 
 const app = express();
@@ -15,6 +16,12 @@ app.get("/", (req, res) => {
 
 // Connect to MongoDB and start the server
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to start server:", err);
+  });

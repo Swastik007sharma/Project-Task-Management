@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "node --watch index.js",
     "start": "node index.js",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "check": "prettier --check .",
+    "diff": "prettier --list-different ."
   },
   "keywords": [],
   "author": "",
