@@ -84,3 +84,29 @@ export async function deleteProject(projectId) {
     method: "DELETE",
   });
 }
+
+export async function getTasksByProject(projectId) {
+  return request(`/api/projects/${projectId}/tasks`, {
+    method: "GET",
+  });
+}
+
+export async function createTask(projectId, payload) {
+  return request(`/api/projects/${projectId}/tasks`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateTask(projectId, taskId, payload) {
+  return request(`/api/projects/${projectId}/tasks/${taskId}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteTask(projectId, taskId) {
+  return request(`/api/projects/${projectId}/tasks/${taskId}`, {
+    method: "DELETE",
+  });
+}

@@ -1,29 +1,29 @@
-.projects-page {
+.tasks-page {
   min-height: 100vh;
   background: #f6f7fb;
   color: #1f2937;
 }
 
-.projects-header {
+.tasks-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 2rem 2.5rem;
 }
 
-.projects-grid {
+.tasks-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
   margin: 0 2.5rem 2.5rem;
 }
 
-.project-form {
+.task-form {
   display: grid;
   gap: 1rem;
 }
 
-.project-form label {
+.task-form label {
   display: grid;
   gap: 0.5rem;
   font-weight: 600;
@@ -31,8 +31,9 @@
   font-size: 0.9rem;
 }
 
-.project-form input,
-.project-form textarea {
+.task-form input,
+.task-form textarea,
+.task-form select {
   border: 1px solid #d7dbe3;
   padding: 0.75rem 0.9rem;
   border-radius: 10px;
@@ -41,22 +42,25 @@
   background: #ffffff;
 }
 
-.project-form input:focus,
-.project-form textarea:focus {
+.task-form input:focus,
+.task-form textarea:focus,
+.task-form select:focus {
   outline: 2px solid rgba(31, 41, 55, 0.2);
   border-color: #1f2937;
 }
 
-.project-form textarea {
-  resize: vertical;
+.task-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-.project-list {
+.task-list {
   display: grid;
   gap: 1rem;
 }
 
-.project-card {
+.task-card {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -67,66 +71,51 @@
   background: #ffffff;
 }
 
-.project-card .ghost-btn {
-  margin-top: 0.6rem;
-}
-
-.project-card h3 {
+.task-card h3 {
   margin: 0;
 }
 
-.project-card p {
+.task-card p {
   margin: 0.35rem 0 0;
 }
 
-.project-card h3 {
-  margin: 0 0 0.4rem;
-  font-size: 1.05rem;
+.task-meta {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  text-transform: capitalize;
 }
 
-.project-alert {
+.task-alert {
   border-radius: 10px;
   padding: 0.75rem 0.9rem;
   font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin: 0 2.5rem 1rem;
 }
 
-.project-alert.success {
+.task-alert.success {
   background: #ecfdf3;
   color: #166534;
 }
 
-.project-alert.error {
+.task-alert.error {
   background: #fef2f2;
   color: #b91c1c;
 }
 
-.ghost-btn {
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 0.55rem 0.9rem;
-  background: transparent;
-  color: #475569;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.card h2 {
-  margin: 0 0 1rem;
-  font-size: 1.2rem;
-}
-
-.card {
-  box-shadow: 0 12px 24px rgba(16, 24, 40, 0.06);
-}
-
 @media (max-width: 640px) {
-  .projects-header {
+  .tasks-header {
     margin: 1.5rem;
   }
 
-  .projects-grid {
+  .tasks-grid {
     margin: 0 1.5rem 1.5rem;
+  }
+
+  .task-row {
+    grid-template-columns: 1fr;
   }
 }

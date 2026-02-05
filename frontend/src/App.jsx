@@ -14,6 +14,7 @@ import Dashboard from "./Pages/Dashboard.jsx";
 import Projects from "./Pages/projects/Projects.jsx";
 import NavBar from "./Components/NavBar.jsx";
 import Profile from "./Pages/profile/Profile.jsx";
+import ProjectTasks from "./Pages/tasks/ProjectTasks.jsx";
 
 function App() {
   const navigate = useNavigate();
@@ -114,6 +115,7 @@ function App() {
       >
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/projects" element={<Projects />} />
+        <Route path="/projects/:projectId/tasks" element={<ProjectTasks />} />
         <Route path="/profile" element={<Profile />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
