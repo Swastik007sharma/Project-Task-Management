@@ -59,6 +59,24 @@ export async function updateProfile(payload) {
   });
 }
 
+export async function getAllUsers() {
+  return request("/api/users", {
+    method: "GET",
+  });
+}
+
+export async function getProjectTaskStats(projectId) {
+  return request(`/api/projects/${projectId}/tasks/stats`, {
+    method: "GET",
+  });
+}
+
+export async function getAllTasks() {
+  return request("/api/tasks", {
+    method: "GET",
+  });
+}
+
 export async function getProjects() {
   return request("/api/projects", {
     method: "GET",

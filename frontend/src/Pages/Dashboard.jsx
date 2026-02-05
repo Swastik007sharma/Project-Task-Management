@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getProjects } from "../services/api.js";
+import { getAllTasks, getProjects } from "../services/api.js";
 import "./Dashboard.css";
 
 function Dashboard() {
   const [projects, setProjects] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [status, setStatus] = useState({ type: "", message: "" });
 
   useEffect(() => {
@@ -17,6 +18,16 @@ function Dashboard() {
       }
     };
     loadProjects();
+
+    const loadTasks = async () => {
+      try {
+        const data = await getAllTasks();
+        setTasks(data.tasks || []);
+      } catch (error) {
+        setStatus({ type: "error", message: error.message });
+      }
+    };
+    loadTasks();
   }, []);
 
   const hasProjects = projects.length > 0;
@@ -73,7 +84,18 @@ function Dashboard() {
       <section className="dashboard-list">
         <div className="card">
           <h2>Recent Tasks</h2>
-          <p className="muted">Tasks will appear here once you add them.</p>
+          {tasks.length ? (
+            <ul className="task-preview">
+              {tasks.slice(0, 5).map((task) => (
+                <li key={task._id}>
+                  <span>{task.title}</span>
+                  <span className="muted">{task.project?.title}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="muted">Tasks will appear here once you add them.</p>
+          )}
         </div>
       </section>
     </div>

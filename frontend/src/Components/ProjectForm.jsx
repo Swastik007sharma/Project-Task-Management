@@ -1,4 +1,4 @@
-function ProjectForm({ onCreate, isSubmitting }) {
+function ProjectForm({ onCreate, isSubmitting, initialValues, submitLabel }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -19,6 +19,7 @@ function ProjectForm({ onCreate, isSubmitting }) {
           name="title"
           type="text"
           placeholder="Marketing Launch"
+          defaultValue={initialValues?.title || ""}
           required
         />
       </label>
@@ -28,11 +29,12 @@ function ProjectForm({ onCreate, isSubmitting }) {
           name="description"
           placeholder="Short summary of the project"
           rows={3}
+          defaultValue={initialValues?.description || ""}
           required
         />
       </label>
       <button className="primary-btn" type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Creating..." : "Create project"}
+        {isSubmitting ? "Saving..." : submitLabel || "Create project"}
       </button>
     </form>
   );

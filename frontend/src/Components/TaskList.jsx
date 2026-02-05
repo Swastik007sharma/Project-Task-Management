@@ -1,4 +1,4 @@
-function TaskList({ tasks, onDelete }) {
+function TaskList({ tasks, onDelete, onEdit }) {
   if (!tasks.length) {
     return <p className="muted">No tasks yet.</p>;
   }
@@ -22,13 +22,22 @@ function TaskList({ tasks, onDelete }) {
               <span>{task.priority}</span>
             </div>
           </div>
-          <button
-            className="ghost-btn"
-            type="button"
-            onClick={() => handleDelete(task)}
-          >
-            Delete
-          </button>
+          <div className="task-actions">
+            <button
+              className="ghost-btn"
+              type="button"
+              onClick={() => onEdit?.(task)}
+            >
+              Edit
+            </button>
+            <button
+              className="ghost-btn"
+              type="button"
+              onClick={() => handleDelete(task)}
+            >
+              Delete
+            </button>
+          </div>
         </div>
       ))}
     </div>

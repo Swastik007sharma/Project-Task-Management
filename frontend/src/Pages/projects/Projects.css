@@ -79,6 +79,11 @@
   background: #ffffff;
 }
 
+.project-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .project-card .ghost-btn {
   margin-top: 0.6rem;
 }

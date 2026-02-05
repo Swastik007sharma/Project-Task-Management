@@ -83,6 +83,11 @@
   background: #ffffff;
 }
 
+.task-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .task-card h3 {
   margin: 0;
 }
@@ -118,12 +123,27 @@
   color: #b91c1c;
 }
 
+.tasks-stats {
+  margin: 0 2.5rem 2.5rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
 @media (max-width: 640px) {
   .tasks-header {
     margin: 1.5rem;
   }
 
   .tasks-grid {
+    margin: 0 1.5rem 1.5rem;
+  }
+
+  .tasks-stats {
     margin: 0 1.5rem 1.5rem;
   }
 

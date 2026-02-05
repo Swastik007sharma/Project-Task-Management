@@ -94,6 +94,26 @@
   padding-bottom: 0;
 }
 
+.task-preview {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.task-preview li {
+  display: grid;
+  gap: 0.2rem;
+  border-bottom: 1px solid #eef1f6;
+  padding-bottom: 0.6rem;
+}
+
+.task-preview li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
 @media (max-width: 640px) {
   .dashboard-header {
     margin: 1.5rem;

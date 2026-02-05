@@ -3,20 +3,27 @@ import { Link, useParams } from "react-router-dom";
 import {
   createTask,
   deleteTask,
+  getAllUsers,
   getProjectById,
+  getProjectTaskStats,
   getTasksByProject,
+  updateTask,
 } from "../../services/api.js";
 import TaskForm from "../../Components/TaskForm.jsx";
 import TaskList from "../../Components/TaskList.jsx";
 import "./Tasks.css";
 
-function ProjectTasks() {
+function ProjectTasks({ user }) {
   const { projectId } = useParams();
   const [tasks, setTasks] = useState([]);
   const [project, setProject] = useState(null);
   const [status, setStatus] = useState({ type: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [editingTask, setEditingTask] = useState(null);
+  const isAdmin = user?.role === "admin";
 
   const loadProject = async () => {
     try {
@@ -36,9 +43,30 @@ function ProjectTasks() {
     }
   };
 
+  const loadUsers = async () => {
+    try {
+      const data = await getAllUsers();
+      setUsers(data.users || []);
+    } catch (error) {
+      // If not admin, this may fail; keep list empty.
+      setUsers([]);
+    }
+  };
+
+  const loadStats = async () => {
+    try {
+      const data = await getProjectTaskStats(projectId);
+      setStats(data);
+    } catch (error) {
+      setStats(null);
+    }
+  };
+
   useEffect(() => {
     loadProject();
     loadTasks();
+    loadUsers();
+    loadStats();
   }, [projectId]);
 
   const handleCreate = async (payload) => {
@@ -47,6 +75,24 @@ function ProjectTasks() {
       await createTask(projectId, payload);
       setStatus({ type: "success", message: "Task created." });
       await loadTasks();
+      await loadStats();
+    } catch (error) {
+      setStatus({ type: "error", message: error.message });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleUpdate = async (payload) => {
+    if (!editingTask) return;
+    try {
+      setIsSubmitting(true);
+      await updateTask(projectId, editingTask._id, payload);
+      setStatus({ type: "success", message: "Task updated." });
+      await loadTasks();
+      await loadStats();
+      setEditingTask(null);
+      setShowForm(false);
     } catch (error) {
       setStatus({ type: "error", message: error.message });
     } finally {
@@ -59,6 +105,7 @@ function ProjectTasks() {
       await deleteTask(projectId, taskId);
       setStatus({ type: "success", message: "Task deleted." });
       await loadTasks();
+      await loadStats();
     } catch (error) {
       setStatus({ type: "error", message: error.message });
     }
@@ -90,20 +137,89 @@ function ProjectTasks() {
             <button
               className="primary-btn"
               type="button"
-              onClick={() => setShowForm((prev) => !prev)}
+              onClick={() => {
+                if (editingTask) {
+                  setEditingTask(null);
+                }
+                setShowForm((prev) => !prev);
+              }}
             >
               {showForm ? "Hide form" : "Create task"}
             </button>
           </div>
-          {showForm && (
-            <TaskForm onCreate={handleCreate} isSubmitting={isSubmitting} />
+          {showForm && !editingTask && (
+            <TaskForm
+              onCreate={handleCreate}
+              isSubmitting={isSubmitting}
+              users={users}
+              showAssign={false}
+            />
           )}
+          {showForm && editingTask ? (
+            <TaskForm
+              onCreate={handleUpdate}
+              isSubmitting={isSubmitting}
+              users={users}
+              initialValues={editingTask}
+              submitLabel="Update task"
+              showAssign={isAdmin}
+            />
+          ) : null}
         </div>
         <div className="card">
           <h2>All Tasks</h2>
-          <TaskList tasks={tasks} onDelete={handleDelete} />
+          <TaskList
+            tasks={tasks}
+            onDelete={handleDelete}
+            onEdit={(task) => {
+              setEditingTask(task);
+              setShowForm(true);
+            }}
+          />
         </div>
       </section>
+
+      {stats ? (
+        <section className="tasks-stats">
+          <div className="card">
+            <h2>Task Statistics</h2>
+            <div className="stats-grid">
+              <div>
+                <span className="stat-value">{stats.total ?? 0}</span>
+                <span className="stat-label">Total</span>
+              </div>
+              <div>
+                <span className="stat-value">{stats.status?.pending ?? 0}</span>
+                <span className="stat-label">Todo</span>
+              </div>
+              <div>
+                <span className="stat-value">
+                  {stats.status?.["in progress"] ?? 0}
+                </span>
+                <span className="stat-label">In Progress</span>
+              </div>
+              <div>
+                <span className="stat-value">{stats.status?.done ?? 0}</span>
+                <span className="stat-label">Done</span>
+              </div>
+              <div>
+                <span className="stat-value">{stats.priority?.low ?? 0}</span>
+                <span className="stat-label">Low</span>
+              </div>
+              <div>
+                <span className="stat-value">
+                  {stats.priority?.medium ?? 0}
+                </span>
+                <span className="stat-label">Medium</span>
+              </div>
+              <div>
+                <span className="stat-value">{stats.priority?.high ?? 0}</span>
+                <span className="stat-label">High</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import {
   createProject,
   deleteProject,
   getProjects,
+  updateProject,
 } from "../../services/api.js";
 import ProjectForm from "../../Components/ProjectForm.jsx";
 import ProjectList from "../../Components/ProjectList.jsx";
@@ -13,6 +14,7 @@ function Projects() {
   const [status, setStatus] = useState({ type: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
 
   const loadProjects = async () => {
     try {
@@ -40,6 +42,22 @@ function Projects() {
     }
   };
 
+  const handleUpdate = async (payload) => {
+    if (!editingProject) return;
+    try {
+      setIsSubmitting(true);
+      await updateProject(editingProject._id, payload);
+      setStatus({ type: "success", message: "Project updated." });
+      await loadProjects();
+      setEditingProject(null);
+      setShowForm(false);
+    } catch (error) {
+      setStatus({ type: "error", message: error.message });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleDelete = async (projectId) => {
     try {
       await deleteProject(projectId);
@@ -48,6 +66,11 @@ function Projects() {
     } catch (error) {
       setStatus({ type: "error", message: error.message });
     }
+  };
+
+  const handleEdit = (project) => {
+    setEditingProject(project);
+    setShowForm(true);
   };
 
   return (
@@ -70,18 +93,35 @@ function Projects() {
             <button
               className="primary-btn"
               type="button"
-              onClick={() => setShowForm((prev) => !prev)}
+              onClick={() => {
+                if (editingProject) {
+                  setEditingProject(null);
+                }
+                setShowForm((prev) => !prev);
+              }}
             >
               {showForm ? "Hide form" : "Create project"}
             </button>
           </div>
-          {showForm && (
+          {showForm && !editingProject && (
             <ProjectForm onCreate={handleCreate} isSubmitting={isSubmitting} />
           )}
+          {showForm && editingProject ? (
+            <ProjectForm
+              initialValues={editingProject}
+              onCreate={handleUpdate}
+              isSubmitting={isSubmitting}
+              submitLabel="Update project"
+            />
+          ) : null}
         </div>
         <div className="card">
           <h2>All Projects</h2>
-          <ProjectList projects={projects} onDelete={handleDelete} />
+          <ProjectList
+            projects={projects}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+          />
         </div>
       </section>
     </div>

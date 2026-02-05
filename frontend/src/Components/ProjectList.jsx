@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function ProjectList({ projects, onDelete }) {
+function ProjectList({ projects, onDelete, onEdit }) {
   if (!projects.length) {
     return <p className="muted">No projects yet.</p>;
   }
@@ -25,13 +25,22 @@ function ProjectList({ projects, onDelete }) {
               View tasks
             </Link>
           </div>
-          <button
-            className="ghost-btn"
-            type="button"
-            onClick={() => handleDelete(project)}
-          >
-            Delete
-          </button>
+          <div className="project-actions">
+            <button
+              className="ghost-btn"
+              type="button"
+              onClick={() => onEdit?.(project)}
+            >
+              Edit
+            </button>
+            <button
+              className="ghost-btn"
+              type="button"
+              onClick={() => handleDelete(project)}
+            >
+              Delete
+            </button>
+          </div>
         </div>
       ))}
     </div>

@@ -115,7 +115,10 @@ function App() {
       >
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/projects" element={<Projects />} />
-        <Route path="/projects/:projectId/tasks" element={<ProjectTasks />} />
+        <Route
+          path="/projects/:projectId/tasks"
+          element={<ProjectTasks user={authState.user} />}
+        />
         <Route path="/profile" element={<Profile />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

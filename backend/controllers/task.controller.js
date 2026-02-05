@@ -200,3 +200,23 @@ exports.getProjectTaskStats = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+// Get all tasks for current user (admin: all, user: tasks in owned projects)
+exports.getAllTasks = async (req, res) => {
+  try {
+    const projects = await Project.find(
+      isAdmin(req.user) ? {} : { owner: req.user.id },
+      "_id",
+    );
+    const projectIds = projects.map((project) => project._id);
+
+    const tasks = await Task.find({ project: { $in: projectIds } })
+      .populate("assignedTo", "name email role")
+      .populate("project", "title owner")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, count: tasks.length, tasks });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};

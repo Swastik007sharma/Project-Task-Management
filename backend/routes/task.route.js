@@ -4,11 +4,13 @@ const {
   createTask,
   getTasksByProject,
   getProjectTaskStats,
+  getAllTasks,
   getTaskById,
   updateTask,
   deleteTask,
 } = require("../controllers/task.controller");
 
+router.get("/tasks", protectedRoutes(), getAllTasks);
 router.post("/projects/:projectId/tasks", protectedRoutes(), createTask);
 router.get("/projects/:projectId/tasks", protectedRoutes(), getTasksByProject);
 router.get(
