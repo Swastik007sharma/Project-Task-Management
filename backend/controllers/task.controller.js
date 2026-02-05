@@ -152,3 +152,51 @@ exports.deleteTask = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+// Get statistics for a project (admin or owner)
+exports.getProjectTaskStats = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Project not found" });
+    }
+
+    if (!ensureProjectAccess(req, project)) {
+      return res.status(403).json({ success: false, message: "Forbidden" });
+    }
+
+    const total = await Task.countDocuments({ project: projectId });
+    const byStatus = await Task.aggregate([
+      { $match: { project: project._id } },
+      { $group: { _id: "$status", count: { $sum: 1 } } },
+    ]);
+    const byPriority = await Task.aggregate([
+      { $match: { project: project._id } },
+      { $group: { _id: "$priority", count: { $sum: 1 } } },
+    ]);
+
+    const statusCounts = { pending: 0, "in progress": 0, done: 0 };
+    byStatus.forEach((item) => {
+      statusCounts[item._id] = item.count;
+    });
+
+    const priorityCounts = { low: 0, medium: 0, high: 0 };
+    byPriority.forEach((item) => {
+      priorityCounts[item._id] = item.count;
+    });
+
+    res.status(200).json({
+      success: true,
+      projectId,
+      total,
+      status: statusCounts,
+      priority: priorityCounts,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};

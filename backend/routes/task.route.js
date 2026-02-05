@@ -3,6 +3,7 @@ const protectedRoutes = require("../middlewares/auth.middleware");
 const {
   createTask,
   getTasksByProject,
+  getProjectTaskStats,
   getTaskById,
   updateTask,
   deleteTask,
@@ -10,6 +11,11 @@ const {
 
 router.post("/projects/:projectId/tasks", protectedRoutes(), createTask);
 router.get("/projects/:projectId/tasks", protectedRoutes(), getTasksByProject);
+router.get(
+  "/projects/:projectId/tasks/stats",
+  protectedRoutes(),
+  getProjectTaskStats,
+);
 router.get(
   "/projects/:projectId/tasks/:taskId",
   protectedRoutes(),
