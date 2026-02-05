@@ -74,6 +74,26 @@
   color: #64748b;
 }
 
+.project-preview {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.project-preview li {
+  display: grid;
+  gap: 0.2rem;
+  border-bottom: 1px solid #eef1f6;
+  padding-bottom: 0.6rem;
+}
+
+.project-preview li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
 @media (max-width: 640px) {
   .dashboard {
     padding: 1.5rem;

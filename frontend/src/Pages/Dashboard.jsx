@@ -1,7 +1,26 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getProjects } from "../services/api.js";
 import "./Dashboard.css";
 
 function Dashboard() {
+  const [projects, setProjects] = useState([]);
+  const [status, setStatus] = useState({ type: "", message: "" });
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        const data = await getProjects();
+        setProjects(data.projects || []);
+      } catch (error) {
+        setStatus({ type: "error", message: error.message });
+      }
+    };
+    loadProjects();
+  }, []);
+
+  const hasProjects = projects.length > 0;
+
   return (
     <div className="dashboard">
       <header className="dashboard-header">
@@ -17,7 +36,20 @@ function Dashboard() {
       <section className="dashboard-grid">
         <div className="card">
           <h2>Projects</h2>
-          <p className="muted">No projects yet. Create your first project.</p>
+          {status.message ? (
+            <p className="muted">{status.message}</p>
+          ) : hasProjects ? (
+            <ul className="project-preview">
+              {projects.slice(0, 4).map((project) => (
+                <li key={project._id}>
+                  <span>{project.title}</span>
+                  <span className="muted">{project.description}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="muted">No projects yet. Create your first project.</p>
+          )}
         </div>
         <div className="card">
           <h2>Tasks</h2>
