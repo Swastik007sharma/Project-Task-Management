@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import AuthLayout from "./Pages/auth/AuthLayout.jsx";
 import Login from "./Pages/auth/Login.jsx";
 import Register from "./Pages/auth/Register.jsx";
 import { loginUser, registerUser } from "./services/api.js";
+import Dashboard from "./Pages/Dashboard.jsx";
 
 function App() {
   const [mode, setMode] = useState("login");
@@ -38,16 +40,27 @@ function App() {
   };
 
   return (
-    <AuthLayout mode={mode} onModeChange={setMode}>
-      {status.message ? (
-        <div className={`auth-alert ${status.type}`}>{status.message}</div>
-      ) : null}
-      {mode === "login" ? (
-        <Login onLogin={(payload) => handleAuth("login", payload)} />
-      ) : (
-        <Register onRegister={(payload) => handleAuth("register", payload)} />
-      )}
-    </AuthLayout>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <AuthLayout mode={mode} onModeChange={setMode}>
+            {status.message ? (
+              <div className={`auth-alert ${status.type}`}>
+                {status.message}
+              </div>
+            ) : null}
+            {mode === "login" ? (
+              <Login onLogin={(payload) => handleAuth("login", payload)} />
+            ) : (
+              <Register onRegister={(payload) => handleAuth("register", payload)} />
+            )}
+          </AuthLayout>
+        }
+      />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 
