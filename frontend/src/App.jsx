@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import AuthLayout from "./Pages/auth/AuthLayout.jsx";
 import Login from "./Pages/auth/Login.jsx";
 import Register from "./Pages/auth/Register.jsx";
-import { getProfile, loginUser, registerUser } from "./services/api.js";
+import {
+  getProfile,
+  loginUser,
+  logoutUser,
+  registerUser,
+} from "./services/api.js";
 import Dashboard from "./Pages/Dashboard.jsx";
 import Projects from "./Pages/projects/Projects.jsx";
+import NavBar from "./Components/NavBar.jsx";
 
 function App() {
   const navigate = useNavigate();
@@ -15,6 +21,7 @@ function App() {
   const [authState, setAuthState] = useState({
     loading: true,
     isAuthenticated: false,
+    user: null,
   });
 
   useEffect(() => {
@@ -28,10 +35,14 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await getProfile();
-        setAuthState({ loading: false, isAuthenticated: true });
+        const profile = await getProfile();
+        setAuthState({
+          loading: false,
+          isAuthenticated: true,
+          user: profile.user || null,
+        });
       } catch (error) {
-        setAuthState({ loading: false, isAuthenticated: false });
+        setAuthState({ loading: false, isAuthenticated: false, user: null });
       }
     };
     checkAuth();
@@ -47,7 +58,12 @@ function App() {
       const successMessage =
         action === "login" ? "Login successful." : "Registration successful.";
       setStatus({ type: "success", message: successMessage });
-      setAuthState({ loading: false, isAuthenticated: true });
+      const profile = await getProfile();
+      setAuthState({
+        loading: false,
+        isAuthenticated: true,
+        user: profile.user || null,
+      });
       navigate("/dashboard");
       return result;
     } catch (error) {
@@ -57,6 +73,16 @@ function App() {
       });
       return null;
     }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } catch (error) {
+      // even if logout fails, clear local auth state
+    }
+    setAuthState({ loading: false, isAuthenticated: false, user: null });
+    navigate("/");
   };
 
   return (
@@ -81,21 +107,13 @@ function App() {
         }
       />
       <Route
-        path="/dashboard"
         element={
-          <ProtectedRoute authState={authState}>
-            <Dashboard />
-          </ProtectedRoute>
+          <ProtectedLayout authState={authState} onLogout={handleLogout} />
         }
-      />
-      <Route
-        path="/projects"
-        element={
-          <ProtectedRoute authState={authState}>
-            <Projects />
-          </ProtectedRoute>
-        }
-      />
+      >
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/projects" element={<Projects />} />
+      </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
@@ -103,12 +121,17 @@ function App() {
 
 export default App;
 
-function ProtectedRoute({ children, authState }) {
+function ProtectedLayout({ authState, onLogout }) {
   if (authState.loading) {
     return <div className="auth-page">Loading...</div>;
   }
   if (!authState.isAuthenticated) {
     return <Navigate to="/" replace />;
   }
-  return children;
+  return (
+    <>
+      <NavBar user={authState.user} onLogout={onLogout} />
+      <Outlet />
+    </>
+  );
 }

@@ -46,6 +46,12 @@ export async function getProfile() {
   });
 }
 
+export async function logoutUser() {
+  return request("/api/auth/logout", {
+    method: "POST",
+  });
+}
+
 export async function getProjects() {
   return request("/api/projects", {
     method: "GET",
