@@ -10,6 +10,9 @@ function NavBar({ user, onLogout }) {
           <NavLink to="/dashboard">Dashboard</NavLink>
           <NavLink to="/projects">Projects</NavLink>
           <NavLink to="/profile">Profile</NavLink>
+          {user?.role === "admin" ? (
+            <NavLink to="/user">Manage Users</NavLink>
+          ) : null}
         </div>
       </div>
       <div className="nav-actions">

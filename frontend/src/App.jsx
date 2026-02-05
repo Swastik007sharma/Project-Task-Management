@@ -15,6 +15,7 @@ import Projects from "./Pages/projects/Projects.jsx";
 import NavBar from "./Components/NavBar.jsx";
 import Profile from "./Pages/profile/Profile.jsx";
 import ProjectTasks from "./Pages/tasks/ProjectTasks.jsx";
+import Users from "./Pages/users/Users.jsx";
 
 function App() {
   const navigate = useNavigate();
@@ -120,6 +121,7 @@ function App() {
           element={<ProjectTasks user={authState.user} />}
         />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/user" element={<Users />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
