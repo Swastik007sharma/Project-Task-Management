@@ -12,6 +12,7 @@ function Projects() {
   const [projects, setProjects] = useState([]);
   const [status, setStatus] = useState({ type: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   const loadProjects = async () => {
     try {
@@ -64,8 +65,19 @@ function Projects() {
 
       <section className="projects-grid">
         <div className="card">
-          <h2>Create Project</h2>
-          <ProjectForm onCreate={handleCreate} isSubmitting={isSubmitting} />
+          <div className="card-header">
+            <h2>Create Project</h2>
+            <button
+              className="primary-btn"
+              type="button"
+              onClick={() => setShowForm((prev) => !prev)}
+            >
+              {showForm ? "Hide form" : "Create project"}
+            </button>
+          </div>
+          {showForm && (
+            <ProjectForm onCreate={handleCreate} isSubmitting={isSubmitting} />
+          )}
         </div>
         <div className="card">
           <h2>All Projects</h2>

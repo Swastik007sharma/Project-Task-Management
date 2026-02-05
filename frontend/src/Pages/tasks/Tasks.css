@@ -18,6 +18,18 @@
   margin: 0 2.5rem 2.5rem;
 }
 
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.card-header h2 {
+  margin: 0;
+}
+
 .task-form {
   display: grid;
   gap: 1rem;

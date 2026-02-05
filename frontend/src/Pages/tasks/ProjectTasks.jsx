@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import {
   createTask,
   deleteTask,
+  getProjectById,
   getTasksByProject,
 } from "../../services/api.js";
 import TaskForm from "../../Components/TaskForm.jsx";
@@ -12,8 +13,19 @@ import "./Tasks.css";
 function ProjectTasks() {
   const { projectId } = useParams();
   const [tasks, setTasks] = useState([]);
+  const [project, setProject] = useState(null);
   const [status, setStatus] = useState({ type: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+
+  const loadProject = async () => {
+    try {
+      const data = await getProjectById(projectId);
+      setProject(data.project || null);
+    } catch (error) {
+      setStatus({ type: "error", message: error.message });
+    }
+  };
 
   const loadTasks = async () => {
     try {
@@ -25,6 +37,7 @@ function ProjectTasks() {
   };
 
   useEffect(() => {
+    loadProject();
     loadTasks();
   }, [projectId]);
 
@@ -56,7 +69,10 @@ function ProjectTasks() {
       <header className="tasks-header">
         <div>
           <p className="eyebrow">Tasks</p>
-          <h1>Project Tasks</h1>
+          <h1>{project?.title || "Project Tasks"}</h1>
+          {project?.description ? (
+            <p className="muted">{project.description}</p>
+          ) : null}
         </div>
         <Link className="ghost-btn" to="/projects">
           Back to Projects
@@ -69,8 +85,19 @@ function ProjectTasks() {
 
       <section className="tasks-grid">
         <div className="card">
-          <h2>Create Task</h2>
-          <TaskForm onCreate={handleCreate} isSubmitting={isSubmitting} />
+          <div className="card-header">
+            <h2>Create Task</h2>
+            <button
+              className="primary-btn"
+              type="button"
+              onClick={() => setShowForm((prev) => !prev)}
+            >
+              {showForm ? "Hide form" : "Create task"}
+            </button>
+          </div>
+          {showForm && (
+            <TaskForm onCreate={handleCreate} isSubmitting={isSubmitting} />
+          )}
         </div>
         <div className="card">
           <h2>All Tasks</h2>

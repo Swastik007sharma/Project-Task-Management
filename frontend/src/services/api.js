@@ -85,6 +85,12 @@ export async function deleteProject(projectId) {
   });
 }
 
+export async function getProjectById(projectId) {
+  return request(`/api/projects/${projectId}`, {
+    method: "GET",
+  });
+}
+
 export async function getTasksByProject(projectId) {
   return request(`/api/projects/${projectId}/tasks`, {
     method: "GET",
