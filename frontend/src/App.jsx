@@ -6,6 +6,7 @@ import Login from "./Pages/auth/Login.jsx";
 import Register from "./Pages/auth/Register.jsx";
 import { getProfile, loginUser, registerUser } from "./services/api.js";
 import Dashboard from "./Pages/Dashboard.jsx";
+import Projects from "./Pages/projects/Projects.jsx";
 
 function App() {
   const navigate = useNavigate();
@@ -84,6 +85,14 @@ function App() {
         element={
           <ProtectedRoute authState={authState}>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/projects"
+        element={
+          <ProtectedRoute authState={authState}>
+            <Projects />
           </ProtectedRoute>
         }
       />

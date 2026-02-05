@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./Dashboard.css";
 
 function Dashboard() {
@@ -8,9 +9,9 @@ function Dashboard() {
           <p className="eyebrow">Dashboard</p>
           <h1>Project Overview</h1>
         </div>
-        <button className="primary-btn" type="button">
-          New Project
-        </button>
+        <Link className="primary-btn" to="/projects">
+          View Projects
+        </Link>
       </header>
 
       <section className="dashboard-grid">

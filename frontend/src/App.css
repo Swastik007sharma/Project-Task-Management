@@ -131,6 +131,15 @@
   border-color: #1f2937;
 }
 
+.auth-form textarea {
+  border: 1px solid #d7dbe3;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: "Manrope", sans-serif;
+  background: #ffffff;
+}
+
 .primary-btn {
   border: none;
   border-radius: 10px;
@@ -139,4 +148,8 @@
   color: #ffffff;
   font-weight: 700;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }

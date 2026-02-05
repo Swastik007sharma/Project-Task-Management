@@ -1,0 +1,124 @@
+.projects-page {
+  min-height: 100vh;
+  padding: 2.5rem;
+  background: #f6f7fb;
+  color: #1f2937;
+}
+
+.projects-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.project-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.project-form label {
+  display: grid;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.9rem;
+}
+
+.project-form input,
+.project-form textarea {
+  border: 1px solid #d7dbe3;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: "Manrope", sans-serif;
+  background: #ffffff;
+}
+
+.project-form input:focus,
+.project-form textarea:focus {
+  outline: 2px solid rgba(31, 41, 55, 0.2);
+  border-color: #1f2937;
+}
+
+.project-form textarea {
+  resize: vertical;
+}
+
+.project-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.project-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid #eef1f6;
+  background: #ffffff;
+}
+
+.project-card h3 {
+  margin: 0;
+}
+
+.project-card p {
+  margin: 0.35rem 0 0;
+}
+
+.project-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+}
+
+.project-alert {
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.project-alert.success {
+  background: #ecfdf3;
+  color: #166534;
+}
+
+.project-alert.error {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.ghost-btn {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.55rem 0.9rem;
+  background: transparent;
+  color: #475569;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.card h2 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+}
+
+.card {
+  box-shadow: 0 12px 24px rgba(16, 24, 40, 0.06);
+}
+
+@media (max-width: 640px) {
+  .projects-page {
+    padding: 1.5rem;
+  }
+}

@@ -45,3 +45,29 @@ export async function getProfile() {
     method: "GET",
   });
 }
+
+export async function getProjects() {
+  return request("/api/projects", {
+    method: "GET",
+  });
+}
+
+export async function createProject(payload) {
+  return request("/api/projects", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateProject(projectId, payload) {
+  return request(`/api/projects/${projectId}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteProject(projectId) {
+  return request(`/api/projects/${projectId}`, {
+    method: "DELETE",
+  });
+}
