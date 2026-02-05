@@ -39,3 +39,9 @@ export async function registerUser(payload) {
     body: JSON.stringify(payload),
   });
 }
+
+export async function getProfile() {
+  return request("/api/users/me", {
+    method: "GET",
+  });
+}
