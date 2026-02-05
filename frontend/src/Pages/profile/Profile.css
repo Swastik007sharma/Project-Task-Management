@@ -32,6 +32,10 @@
   align-content: start;
 }
 
+.profile-summary .muted {
+  margin: 0.2rem 0 0;
+}
+
 .profile-summary h2 {
   margin: 0;
 }
@@ -48,14 +52,30 @@
   place-items: center;
 }
 
+.profile-meta {
+  display: grid;
+  gap: 0.35rem;
+}
+
 .profile-form-card h2 {
   margin: 0 0 0.4rem;
   font-size: 1.3rem;
 }
 
+.profile-helper {
+  margin: 0 0 1rem;
+  color: #64748b;
+}
+
 .profile-form {
   display: grid;
   gap: 1rem;
+}
+
+.profile-form label span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .profile-form label {
@@ -66,9 +86,18 @@
   font-size: 0.9rem;
 }
 
+.field-error {
+  font-size: 0.8rem;
+  color: #b91c1c;
+  font-weight: 500;
+}
+
 .profile-toggle {
   justify-self: start;
   margin-top: 0.25rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #1f2937;
 }
 
 .profile-form input {

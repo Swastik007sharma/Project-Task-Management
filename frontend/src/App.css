@@ -5,6 +5,17 @@
   padding: 2.5rem 1.5rem;
 }
 
+.app-shell {
+  min-height: 100vh;
+  background: #f6f7fb;
+}
+
+.app-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem 3rem;
+}
+
 .auth-card {
   width: min(420px, 100%);
   background: #ffffff;

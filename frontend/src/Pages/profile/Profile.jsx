@@ -12,6 +12,7 @@ function Profile() {
   const [status, setStatus] = useState({ type: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -39,6 +40,25 @@ function Profile() {
     event.preventDefault();
     setIsSubmitting(true);
     try {
+      const nextErrors = {};
+      if (!form.name.trim()) nextErrors.name = "Name is required.";
+      if (!form.email.trim()) nextErrors.email = "Email is required.";
+      if (showPasswordFields) {
+        if (!form.password || !form.confirmPassword) {
+          nextErrors.password = "Both password fields are required.";
+        }
+        if (form.password !== form.confirmPassword) {
+          nextErrors.confirmPassword = "Passwords do not match.";
+        }
+        if (form.password && form.password.length < 8) {
+          nextErrors.password = "Password must be at least 8 characters.";
+        }
+      }
+      setErrors(nextErrors);
+      if (Object.keys(nextErrors).length) {
+        return;
+      }
+
       if (showPasswordFields) {
         if (!form.password || !form.confirmPassword) {
           setStatus({
@@ -66,6 +86,7 @@ function Profile() {
         confirmPassword: "",
       }));
       setShowPasswordFields(false);
+      setErrors({});
     } catch (error) {
       setStatus({ type: "error", message: error.message });
     } finally {
@@ -87,7 +108,7 @@ function Profile() {
           <div className="profile-avatar">
             {(form.name || form.email || "U")[0].toUpperCase()}
           </div>
-          <div>
+          <div className="profile-meta">
             <h2>{form.name || "Your Name"}</h2>
             <p className="muted">{form.email || "your@email.com"}</p>
           </div>
@@ -95,9 +116,8 @@ function Profile() {
 
         <div className="profile-card profile-form-card">
           <h2>Profile details</h2>
-          <p className="muted">
-            Update your personal information. Leave password blank to keep it
-            unchanged.
+          <p className="muted profile-helper">
+            Update your details. Password changes are optional.
           </p>
 
           {status.message ? (
@@ -116,6 +136,9 @@ function Profile() {
                 onChange={handleChange}
                 required
               />
+              {errors.name ? (
+                <span className="field-error">{errors.name}</span>
+              ) : null}
             </label>
             <label>
               Email
@@ -126,6 +149,9 @@ function Profile() {
                 onChange={handleChange}
                 required
               />
+              {errors.email ? (
+                <span className="field-error">{errors.email}</span>
+              ) : null}
             </label>
             <label>
               Password
@@ -159,6 +185,9 @@ function Profile() {
                     minLength={8}
                     required
                   />
+                  {errors.password ? (
+                    <span className="field-error">{errors.password}</span>
+                  ) : null}
                 </label>
                 <label>
                   Confirm password
@@ -171,6 +200,11 @@ function Profile() {
                     minLength={8}
                     required
                   />
+                  {errors.confirmPassword ? (
+                    <span className="field-error">
+                      {errors.confirmPassword}
+                    </span>
+                  ) : null}
                 </label>
               </>
             ) : null}

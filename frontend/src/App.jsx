@@ -114,14 +114,24 @@ function App() {
           <ProtectedLayout authState={authState} onLogout={handleLogout} />
         }
       >
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/projects" element={<Projects />} />
         <Route
-          path="/projects/:projectId/tasks"
-          element={<ProjectTasks user={authState.user} />}
-        />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/user" element={<Users />} />
+          element={
+            <div className="app-shell">
+              <div className="app-content">
+                <Outlet />
+              </div>
+            </div>
+          }
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route
+            path="/projects/:projectId/tasks"
+            element={<ProjectTasks user={authState.user} />}
+          />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/user" element={<Users />} />
+        </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

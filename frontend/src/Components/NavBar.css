@@ -6,6 +6,9 @@
   background: #ffffff;
   border-bottom: 1px solid #eef1f6;
   gap: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .nav-left {
@@ -32,10 +35,13 @@
   color: #475569;
   font-weight: 600;
   text-decoration: none;
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
 }
 
 .nav-links a.active {
   color: #1f2937;
+  background: #f1f5f9;
 }
 
 .nav-actions {
@@ -75,6 +81,10 @@
 .nav-email {
   font-size: 0.8rem;
   color: #64748b;
+}
+
+.nav-actions .ghost-btn {
+  padding: 0.45rem 0.9rem;
 }
 
 @media (max-width: 720px) {
