@@ -70,6 +70,28 @@
   gap: 1rem;
 }
 
+.auth-alert {
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.auth-alert.loading {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.auth-alert.success {
+  background: #ecfdf3;
+  color: #166534;
+}
+
+.auth-alert.error {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
 .auth-form {
   display: grid;
   gap: 1rem;
