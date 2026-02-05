@@ -19,6 +19,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", require("./routes/auth.route"));
 app.use("/api/users", require("./routes/user.route"));
 app.use("/api/projects", require("./routes/project.route"));
+app.use("/api", require("./routes/task.route"));
 
 // Connect to MongoDB and start the server
 
