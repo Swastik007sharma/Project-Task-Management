@@ -25,7 +25,7 @@ const setAuthCookie = (res, token) => {
   res.cookie("token", token, {
     httpOnly: true, // Prevents XSS
     secure: process.env.NODE_ENV === "production", // Only over HTTPS in production
-    sameSite: "strict", // Prevents CSRF
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 };
