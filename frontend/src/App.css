@@ -81,6 +81,22 @@
   gap: 1rem;
 }
 
+.auth-transition {
+  animation: authFade 240ms ease-out;
+  transform-origin: center;
+}
+
+@keyframes authFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .auth-alert {
   border-radius: 10px;
   padding: 0.75rem 0.9rem;

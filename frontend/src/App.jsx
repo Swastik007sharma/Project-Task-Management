@@ -99,13 +99,15 @@ function App() {
                 {status.message}
               </div>
             ) : null}
-            {mode === "login" ? (
-              <Login onLogin={(payload) => handleAuth("login", payload)} />
-            ) : (
-              <Register
-                onRegister={(payload) => handleAuth("register", payload)}
-              />
-            )}
+            <div key={mode} className="auth-transition">
+              {mode === "login" ? (
+                <Login onLogin={(payload) => handleAuth("login", payload)} />
+              ) : (
+                <Register
+                  onRegister={(payload) => handleAuth("register", payload)}
+                />
+              )}
+            </div>
           </AuthLayout>
         }
       />
