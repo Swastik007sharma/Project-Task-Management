@@ -10,6 +10,8 @@ const getJwtSecret = () => {
   return secret;
 };
 
+const normalizeEmail = (email) => email?.toString().trim().toLowerCase();
+
 // Helper: Remove sensitive data before sending to client
 const toSafeUser = (user) => {
   if (!user) return null;
@@ -35,8 +37,9 @@ const setAuthCookie = (res, token) => {
 exports.registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    const normalizedEmail = normalizeEmail(email);
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res
         .status(400)
@@ -47,7 +50,7 @@ exports.registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
     const newUser = await User.create({
       name,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
     });
 
@@ -76,7 +79,8 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const normalizedEmail = normalizeEmail(email);
+    const user = await User.findOne({ email: normalizedEmail });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res
