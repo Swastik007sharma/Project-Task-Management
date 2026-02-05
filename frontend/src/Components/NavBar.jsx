@@ -1,9 +1,17 @@
+import { NavLink } from "react-router-dom";
 import "./NavBar.css";
 
 function NavBar({ user, onLogout }) {
   return (
     <nav className="app-nav">
-      <div className="nav-brand">TaskForge</div>
+      <div className="nav-left">
+        <div className="nav-brand">TaskForge</div>
+        <div className="nav-links">
+          <NavLink to="/dashboard">Dashboard</NavLink>
+          <NavLink to="/projects">Projects</NavLink>
+          <NavLink to="/profile">Profile</NavLink>
+        </div>
+      </div>
       <div className="nav-actions">
         <div className="nav-profile">
           <span className="nav-avatar">

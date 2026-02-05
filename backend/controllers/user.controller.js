@@ -130,12 +130,25 @@ exports.getProfile = async (req, res) => {
  */
 exports.updateProfile = async (req, res) => {
   try {
-    const { name, password } = req.body;
+    const { name, email, password } = req.body;
     const user = await User.findById(req.user.id);
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
     if (name) user.name = name;
+    if (email) {
+      const normalizedEmail = normalizeEmail(email);
+      const existingUser = await User.findOne({
+        email: normalizedEmail,
+        _id: { $ne: user._id },
+      });
+      if (existingUser) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Email already in use" });
+      }
+      user.email = normalizedEmail;
+    }
     if (password) user.password = await bcrypt.hash(password, SALT_ROUNDS);
 
     await user.save();

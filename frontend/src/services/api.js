@@ -52,6 +52,13 @@ export async function logoutUser() {
   });
 }
 
+export async function updateProfile(payload) {
+  return request("/api/users/me", {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function getProjects() {
   return request("/api/projects", {
     method: "GET",
