@@ -21,6 +21,12 @@ function ProjectList({ projects, onDelete, onEdit }) {
           <div>
             <h3>{project.title}</h3>
             <p className="muted">{project.description}</p>
+            {project.owner ? (
+              <p className="muted project-owner">
+                Created by{" "}
+                {project.owner.name || project.owner.email || "Unknown"}
+              </p>
+            ) : null}
             <Link className="ghost-btn" to={`/projects/${project._id}/tasks`}>
               View tasks
             </Link>

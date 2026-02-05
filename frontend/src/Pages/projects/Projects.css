@@ -96,6 +96,10 @@
   margin: 0.35rem 0 0;
 }
 
+.project-owner {
+  font-size: 0.85rem;
+}
+
 .project-card h3 {
   margin: 0 0 0.4rem;
   font-size: 1.05rem;
