@@ -31,6 +31,14 @@ function Dashboard() {
   }, []);
 
   const hasProjects = projects.length > 0;
+  const statusCounts = tasks.reduce(
+    (acc, task) => {
+      const status = task.status || "pending";
+      acc[status] = (acc[status] || 0) + 1;
+      return acc;
+    },
+    { pending: 0, "in progress": 0, done: 0 },
+  );
 
   return (
     <div className="dashboard">
@@ -66,15 +74,17 @@ function Dashboard() {
           <h2>Tasks</h2>
           <div className="stats">
             <div>
-              <span className="stat-value">0</span>
+              <span className="stat-value">{statusCounts.pending || 0}</span>
               <span className="stat-label">Todo</span>
             </div>
             <div>
-              <span className="stat-value">0</span>
+              <span className="stat-value">
+                {statusCounts["in progress"] || 0}
+              </span>
               <span className="stat-label">In Progress</span>
             </div>
             <div>
-              <span className="stat-value">0</span>
+              <span className="stat-value">{statusCounts.done || 0}</span>
               <span className="stat-label">Done</span>
             </div>
           </div>
